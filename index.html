@@ -90,7 +90,8 @@ tr.me td:first-child{box-shadow:inset 3px 0 0 var(--slab)}
 .links a.main{background:var(--ink);color:var(--paper);border-color:var(--ink);grid-column:1/-1}
 .note{font-size:13px;color:var(--muted)}
 .src{margin:6px 0 0;padding-left:18px;font-size:13px;display:flex;flex-direction:column;gap:4px}.src a{color:var(--ink);overflow-wrap:anywhere}
-details.set{background:var(--card);border:1px solid var(--line);border-radius:14px;padding:12px 14px}details.set summary{cursor:pointer;font-weight:700}details.set .in{display:flex;flex-direction:column;gap:10px;margin-top:12px}.chk{display:flex;gap:10px;align-items:center;font-size:14px}.chk input{width:22px;height:22px}
+details.set{background:var(--card);border:1px solid var(--line);border-radius:14px;padding:12px 14px}details.set summary{cursor:pointer;font-weight:700}details.set .in{display:flex;flex-direction:column;gap:10px;margin-top:12px}.secret{-webkit-text-security:disc}.secret:focus{-webkit-text-security:none}
+.chk{display:flex;gap:10px;align-items:center;font-size:14px}.chk input{width:22px;height:22px}
 .conf{height:6px;border-radius:9px;background:var(--line);overflow:hidden}
 .conf i{display:block;height:100%;background:var(--good)}
 
@@ -164,7 +165,7 @@ details.set{background:var(--card);border:1px solid var(--line);border-radius:14
     <summary>Réglages</summary>
     <div class="in">
       <label class="f" for="apiKey">Clé API Anthropic
-        <input id="apiKey" type="password" autocomplete="off" placeholder="sk-ant-…">
+        <input id="apiKey" type="text" class="secret" name="anthropic-key" autocomplete="off" autocapitalize="off" autocorrect="off" spellcheck="false" data-lpignore="true" placeholder="sk-ant-api03-…">
       </label>
       <label class="f" for="model">Modèle
         <input id="model" type="text" autocomplete="off">
@@ -419,7 +420,7 @@ const apiKey=()=>getLS(K_KEY,"").trim();
 $("#apiKey").value=apiKey();
 $("#live").checked=getLS(K_LIVE,"1")==="1";
 $("#model").value=getLS(K_MODEL,"claude-sonnet-5-5");
-$("#saveKey").onclick=()=>{setLS(K_KEY,$("#apiKey").value.trim());setLS(K_MODEL,$("#model").value.trim()||"claude-sonnet-5-5");$("#keyMsg").textContent=apiKey()?"Clé enregistrée sur ce téléphone.":"Clé supprimée.";refresh()};
+$("#saveKey").onclick=()=>{const v=$("#apiKey").value.trim();if(v&&!v.startsWith("sk-ant-")){$("#keyMsg").textContent="Ce n'est pas une clé Anthropic : elle doit commencer par sk-ant-. Copie-la depuis console.anthropic.com → API Keys.";return}setLS(K_KEY,v);setLS(K_MODEL,$("#model").value.trim()||"claude-sonnet-5-5");$("#keyMsg").textContent=apiKey()?"Clé enregistrée sur ce téléphone.":"Clé supprimée.";refresh()};
 $("#live").onchange=()=>setLS(K_LIVE,$("#live").checked?"1":"0");
 if(!apiKey()) $("#settings").open=true;
 
